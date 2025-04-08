@@ -1,0 +1,6 @@
+generatorName: typescript-axios
+outputDir: /local/resources/tmp
+cleanupOutput: true
+inputSpec: /local/resources/tacacs-api.yaml
+additionalProperties:
+  supportsES6: true

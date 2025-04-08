@@ -1,0 +1,231 @@
+[
+    {
+        "name": "Agent",
+        "path": "download-linuxagent",
+        "archs": [
+            {
+                "arc": "x86_64",
+                "osystems": [
+                    {
+                        "os": "Centos",
+                        "versions": [
+                            {
+                                "label": "Centos 5",
+                                "runner": "pdagent-centos5-amd64.run"
+                            },
+                            {
+                                "label": "Centos 6",
+                                "runner": "pdagent-centos6-amd64.run"
+                            },
+                            {
+                                "label": "Centos 7",
+                                "runner": "pdagent-centos7-amd64.run"
+                            },
+                            {
+                                "label": "Centos 8",
+                                "runner": "pdagent-centos8-amd64.run"
+                            },
+                            {
+                                "label": "Centos 9",
+                                "runner": "pdagent-centos9-amd64.run"
+                            }
+                        ]
+                    },
+                    {
+                        "os": "Redhat",
+                        "versions": [
+                            {
+                                "label": "Redhat 5",
+                                "runner": "pdagent-redhat5-amd64.run"
+                            },
+                            {
+                                "label": "Redhat 6",
+                                "runner": "pdagent-redhat6-amd64.run"
+                            },
+                            {
+                                "label": "Redhat 7",
+                                "runner": "pdagent-redhat7-amd64.run"
+                            },
+                            {
+                                "label": "Redhat 8",
+                                "runner": "pdagent-redhat8-amd64.run"
+                            },
+                            {
+                                "label": "Redhat 9",
+                                "runner": "pdagent-redhat9-amd64.run"
+                            }
+                        ]
+                    },
+                    {
+                        "os": "Oracle",
+                        "versions": [
+                            {
+                                "label": "Oracle 5",
+                                "runner": "pdagent-oracle5-amd64.run"
+                            },
+                            {
+                                "label": "Oracle 6",
+                                "runner": "pdagent-oracle7-amd64.run"
+                            },
+                            {
+                                "label": "Oracle 7",
+                                "runner": "pdagent-oracle7-amd64.run"
+                            },
+                            {
+                                "label": "Oracle 8",
+                                "runner": "pdagent-oracle8-amd64.run"
+                            },
+                            {
+                                "label": "Oracle 9",
+                                "runner": "pdagent-oracle9-amd64.run"
+                            }
+                        ]
+                    },
+                    {
+                        "os": "Ubuntu",
+                        "versions": [
+                            {
+                                "label": "Ubuntu 5",
+                                "runner": ""
+                            },
+                            {
+                                "label": "Ubuntu 6",
+                                "runner": ""
+                            },
+                            {
+                                "label": "Ubuntu 7",
+                                "runner": ""
+                            },
+                            {
+                                "label": "Ubuntu 8",
+                                "runner": ""
+                            },
+                            {
+                                "label": "Ubuntu 9",
+                                "runner": ""
+                            }
+                        ]
+                    },
+                    {
+                        "os": "Suse",
+                        "versions": [
+                            {
+                                "label": "Suse 11",
+                                "runner": "pdagent-suse11-amd64.run"
+                            },
+                            {
+                                "label": "Suse 12",
+                                "runner": "pdagent-suse12-amd64.run"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "arc": "i386",
+                "osystems": [
+                    {
+                        "os": "Centos",
+                        "versions": [
+                            {
+                                "label": "Centos 5",
+                                "runner": "pdagent-centos5-i386.run"
+                            },
+                            {
+                                "label": "Centos 6",
+                                "runner": ""
+                            },
+                            {
+                                "label": "Centos 7",
+                                "runner": ""
+                            },
+                            {
+                                "label": "Centos 8",
+                                "runner": ""
+                            },
+                            {
+                                "label": "Centos 9",
+                                "runner": ""
+                            }
+                        ]
+                    },
+                    {
+                        "os": "Redhat",
+                        "versions": [
+                            {
+                                "label": "Redhat 5",
+                                "runner": "pdagent-redhat5-i386.run"
+                            },
+                            {
+                                "label": "Redhat 6",
+                                "runner": ""
+                            },
+                            {
+                                "label": "Redhat 7",
+                                "runner": ""
+                            },
+                            {
+                                "label": "Redhat 8",
+                                "runner": ""
+                            },
+                            {
+                                "label": "Redhat 9",
+                                "runner": ""
+                            }
+                        ]
+                    },
+                    {
+                        "os": "Oracle",
+                        "versions": [
+                            {
+                                "label": "Oracle 5",
+                                "runner": "pdagent-oracle5-i386.run"
+                            },
+                            {
+                                "label": "Oracle 6",
+                                "runner": ""
+                            },
+                            {
+                                "label": "Oracle 7",
+                                "runner": ""
+                            },
+                            {
+                                "label": "Oracle 8",
+                                "runner": ""
+                            },
+                            {
+                                "label": "Oracle 9",
+                                "runner": ""
+                            }
+                        ]
+                    },
+                    {
+                        "os": "Ubuntu",
+                        "versions": [
+                            {
+                                "label": "Ubuntu 5",
+                                "runner": ""
+                            },
+                            {
+                                "label": "Ubuntu 6",
+                                "runner": ""
+                            },
+                            {
+                                "label": "Ubuntu 7",
+                                "runner": ""
+                            },
+                            {
+                                "label": "Ubuntu 8",
+                                "runner": ""
+                            },
+                            {
+                                "label": "Ubuntu 9",
+                                "runner": ""
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

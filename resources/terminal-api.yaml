@@ -1,0 +1,544 @@
+openapi: 3.0.3
+info:
+  title: PDAccess Terminal Proxy - OpenAPI 3.0
+  description: |-
+    Terminal proxy Server rest api for PDAccess interface
+  termsOfService: http://www.pdaccess.com/terms/
+  contact:
+    email: support@pdaccess.com
+  version: 0.0.1
+externalDocs:
+  description: Find out more about Swagger
+  url: http://www.pdaccess.com
+servers:
+  - url: /api/v1/terminal
+tags:
+  - name: logs
+    description: Logs Query For Authentication & Authorization & Accounting
+  - name: policy
+    description: Terminal Policy Managemenet Per Group
+  - name: config
+    description: Terminal Related ConfigurationData Management
+paths:
+  /policy/group/{group}:
+    get:
+      tags:
+        - policy
+      summary: Find Policies in group
+      description: Fetch Group Policy Definition
+      operationId: findPolicyGroups
+      parameters:
+        - name: group
+          in: path
+          description: Group Id for policy
+          required: true
+          explode: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GroupPolicyResponse"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+    post:
+      tags:
+        - policy
+      summary: Create a policy in the db with form data
+      description: Create Policy in the group
+      operationId: createPolicy
+      parameters:
+        - name: group
+          in: path
+          description: Group Id for policy
+          required: true
+          explode: true
+          schema:
+            type: string
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PolicyCreateRequest"
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PolicyResponse"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+  /policy/{policy}:
+    get:
+      tags:
+        - policy
+      summary: Find policy by ID
+      description: Returns a single policy
+      operationId: getPolicyById
+      parameters:
+        - name: policy
+          in: path
+          description: ID of policy to return
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PolicyResponse"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+        "404":
+          description: Policy not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+    post:
+      tags:
+        - policy
+      summary: Updates a policy in the store with form data
+      description: ""
+      operationId: updatePolicy
+      parameters:
+        - name: policy
+          in: path
+          description: ID of policy that needs to be updated
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PolicyCreateRequest"
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Policy"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+    delete:
+      tags:
+        - policy
+      summary: Deletes a policy
+      description: delete a policy
+      operationId: deletePolicy
+      parameters:
+        - name: policy
+          in: path
+          description: Policy id to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+
+  /logs/accounting/{serviceId}:
+    post:
+      tags:
+        - logs
+      summary: service accouting logs
+      description: ""
+      operationId: acctService
+      parameters:
+        - name: serviceId
+          in: path
+          description: ID of service ID
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: limit count of results
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: offset
+          in: query
+          description: offset of the page count
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: filter
+          in: query
+          description: filter of log
+          required: false
+          schema:
+            type: string
+        - name: startDate
+          in: query
+          description: start date of log range
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: endDate
+          in: query
+          description: end date of log range
+          required: false
+          schema:
+            type: string
+            format: date-time
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccoutingLogResponse"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+  /settings:
+    get:
+      tags:
+        - config
+      summary: Server Settings For Terminal Proxy
+      description: Server ConfigurationData Management
+      operationId: getConfigurationData
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConfigurationData"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+
+  /logs/session:
+    post:
+      tags:
+        - logs
+      summary: service session logs
+      description: Service Session logs
+      operationId: getSessionLogs
+      parameters:
+        - name: serviceId
+          in: query
+          description: ID of service ID
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: limit count of results
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: offset
+          in: query
+          description: offset of the page count
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: filter
+          in: query
+          description: filter of log
+          required: false
+          schema:
+            type: string
+        - name: startDate
+          in: query
+          description: start date of log range
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: endDate
+          in: query
+          description: end date of log range
+          required: false
+          schema:
+            type: string
+            format: date-time
+      responses:
+        "200":
+          description: authorization logs
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionLogResponse"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+components:
+  schemas:
+    PolicyType:
+      type: string
+      description: Policy type
+      enum:
+        - B
+        - W
+        - F
+        - A
+
+    Policy:
+      type: object
+      required:
+        - name
+        - userIds
+        - regexes
+        - policyType
+      properties:
+        policyId:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        userIds:
+          type: array
+          items:
+            type: string
+        regexes:
+          type: array
+          items:
+            type: string
+        policyType:
+          $ref: "#/components/schemas/PolicyType"
+        createdByUsername:
+          type: string
+        createdByUserid:
+          type: string
+        createdAt:
+          type: string
+    Accounting:
+      type: object
+      properties:
+        userId:
+          type: string
+        username:
+          type: string
+        command:
+          type: string
+        params:
+          type: string
+        remoteAddr:
+          type: string
+        createdAt:
+          type: string
+        flag:
+          type: string
+        authenType:
+          type: string
+        authenService:
+          type: string
+        authenMethod:
+          type: string
+
+    ApiResponse:
+      type: object
+      description: Api generic response for errors
+      required:
+        - code
+        - type
+        - message
+        - requestId
+      properties:
+        code:
+          type: string
+        type:
+          type: string
+        message:
+          type: string
+        requestId:
+          type: string
+    PolicyResponse:
+      type: object
+      required:
+        - policy
+        - requestId
+      properties:
+        requestId:
+          type: string
+        policy:
+          $ref: "#/components/schemas/Policy"
+    AuthenticationLog:
+      type: object
+      required:
+        - username
+        - remoteAddress
+        - userAddress
+        - status
+        - attemptedAt
+      properties:
+        userId:
+          type: string
+        username:
+          type: string
+        remoteAddress:
+          type: string
+        userAddress:
+          type: string
+        authenticationId:
+          type: integer
+          format: int32
+        reason:
+          type: string
+        status:
+          type: boolean
+        attemptedAt:
+          type: string
+        authen_action:
+          type: string
+        authen_type:
+          type: string
+        authen_service:
+          type: string
+    SessionLog:
+      type: object
+      required:
+        - userId
+        - remoteAddress
+        - userAddress
+        - startTime
+        - sessionId
+        - sessionType
+      properties:
+        userId:
+          type: string
+        remoteAddress:
+          type: string
+        serviceId:
+          type: string
+        credentialId:
+          type: string
+        startTime:
+          type: string
+          format: time
+        endTime:
+          type: string
+          format: time
+        sessionId:
+          type: string
+        sessionType:
+          type: integer
+    SessionLogResponse:
+      type: object
+      required:
+        - requestId
+        - data
+      properties:
+        requestId:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/SessionLog"
+
+    AccoutingLogResponse:
+      type: object
+      required:
+        - requestId
+        - data
+      properties:
+        requestId:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Accounting"
+    GroupPolicyResponse:
+      type: object
+      required:
+        - requestId
+        - data
+      properties:
+        requestId:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Policy"
+    PolicyCreateRequest:
+      type: object
+      required:
+        - name
+        - userIds
+        - regexes
+        - policyType
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        userIds:
+          type: array
+          items:
+            type: string
+        regexes:
+          type: array
+          items:
+            type: string
+        policyType:
+          $ref: "#/components/schemas/PolicyType"
+    ConfigurationData:
+      type: object
+      required:
+        - secret
+        - maxConnection
+        - connectionRate
+      properties:
+        secret:
+          type: string
+        connectionRate:
+          type: integer
+          format: int32
+        maxConnection:
+          type: integer
+          format: int32

@@ -1,0 +1,3 @@
+# Yönetim Detay
+
+___

@@ -1,0 +1,1022 @@
+openapi: 3.0.1
+info:
+  title: Credential Manager OpenAPI definition
+  version: v1
+servers:
+  - url: /api/v1/cmanager
+    description: Credential Manager Api list
+externalDocs:
+  description: Find out more about Swagger
+  url: http://www.pdaccess.com
+tags:
+  - name: credentials
+    description: Credentials Operations
+  - name: manage
+    description: Password maintaince management operations
+  - name: config
+    description: Configuration Management
+  - name: permission
+    description: Permissions for Credential
+  - name: breakTheGlass
+    description: Break The Glass operations
+paths:
+  /credential/{credentialId}:
+    get:
+      tags:
+        - credentials
+      operationId: getCredentialsById
+      description: Get single credential with id
+      parameters:
+        - name: credentialId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/GetCredentialResponse'
+        "403":
+          description: Credential is forbidden to current user
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+                
+        "400":
+          description: Credential Not Found
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+    put:
+      tags:
+        - credentials
+      operationId: updateCredential
+      description: Update single credential with id
+      parameters:
+        - name: credentialId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCredentialRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        "403":
+          description: Credential is forbidden to current user
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+                
+        "400":
+          description: Credential Not Found
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+    delete:
+      tags:
+        - credentials
+      operationId: deleteCredential
+      description: Delete single credential with id
+      parameters:
+        - name: credentialId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        "403":
+          description: Credential is forbidden to current user
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+                
+        "400":
+          description: Credential Not Found
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+                
+  /credential/{groupId}:
+    post:
+      tags:
+        - credentials
+      operationId: createCredential
+      description: Create New Credential
+      parameters:
+        - name: groupId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCredentialRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/PostCredentialResponse'
+        "403":
+          description: Credential is forbidden to current user
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+                
+        "400":
+          description: Credential Not Found
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+                
+  /credential:
+    get:
+      tags:
+        - credentials
+      operationId: searchCredentials
+      parameters:
+        - name: groupId
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: limit count of results
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: offset
+          in: query
+          description: offset of the page count
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: filter
+          in: query
+          description: filter of log
+          required: false
+          schema:
+            type: string
+        - name: startDate
+          in: query
+          description: start date of log range
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: endDate
+          in: query
+          description: end date of log range
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: showDeleted
+          in: query
+          description: Show deleted credentials in this search
+          required: false
+          schema:
+            type: boolean
+        - name: showOwnCredential
+          in: query
+          description: Show own credentials in this search
+          required: false
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/SearchCredentialResponse'
+        "403":
+          description: Credential is forbidden to current user
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+                
+        "400":
+          description: Credential Not Found
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  
+  /credential/counter:
+    get:
+      tags:
+        - credentials
+      operationId: searchCountCredentials
+      responses:
+        "200":
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/SearchCredentialCountResponse'
+        "403":
+          description: Credential is forbidden to current user
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+                
+        "400":
+          description: Credential Not Found
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+                
+  /history:
+    post:
+      tags:
+        - credentials
+      operationId: getHistory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetHistoryRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/GetCredentialHistoryResponse'
+        "403":
+          description: Credential is forbidden to current user
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+                
+        "400":
+          description: Credential Not Found
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  
+  /break/{credentialId}:
+    get:
+      tags:
+        - breakTheGlass
+      operationId: breakCredential
+      parameters:
+        - name: credentialId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: check
+          in: query
+          required: false
+          description: if this param is true then we try to lock credential. otherwise we try to checkout.
+          schema:
+            type: boolean
+        - name: message
+          in: query
+          required: false
+          description: break the glass message
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/GetBreakCredentialResponse'
+        "204":
+          description: Credential Checkout Success Response
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        "403":
+          description: Credential is forbidden to current user
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+                
+        "400":
+          description: Credential Not Found or Status Failed
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  
+  /manage/{credentialId}:
+    post:
+      tags:
+        - manage
+      operationId: saveCredentialManageData
+      parameters:
+        - name: credentialId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostCredentialManageDataRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/PostCredentialManageDataResponse'
+                
+        "403":
+          description: Credential is forbidden to current user
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+                
+        "400":
+          description: Credential Not Found or Status Failed
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+    get:
+      tags:
+        - manage
+      operationId: credentialManageDataById
+      parameters:
+        - name: credentialId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/GetCredentialManageDataResponse'
+                
+        "403":
+          description: Credential is forbidden to current user
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+                
+        "400":
+          description: Credential Not Found or Status Failed
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+                
+
+
+  /permission/{credentialId}:
+    get:
+      tags:
+        - permission
+      operationId: getCredentialPermission
+      description: Fetch credential permission map for users
+      parameters:
+        - name: credentialId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/GetPermissionsResponse'
+                
+        "403":
+          description: Credential is forbidden to current user
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+                
+        "400":
+          description: Credential Not Found
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+    post:
+      description: Upsert Permission for related credentials
+      tags:
+        - permission
+      operationId: upsertPermission
+      parameters:
+        - name: credentialId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostPermissionRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        
+        "403":
+          description: Credential is unauthorized to current user
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+                
+        "400":
+          description: Credential Not Found
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+                
+  /statistic:
+    get:
+      tags:
+        - credentials
+      operationId: vaultCounters
+      description: |-
+        system counters for related credentials
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/GetCredentialCounters'
+                
+        "403":
+          description: Credential is forbidden to current user
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+                
+        "400":
+          description: Credential Not Found
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  
+  /config:
+    post:
+      tags:
+        - config
+      operationId: upsertConfiguration
+      description: Create New Credential
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCredentialConfigRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        "403":
+          description: Credential is forbidden to current user
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+                
+        "400":
+          description: Credential Not Found
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+    get:
+      tags:
+        - config
+      operationId: getConfiguration
+      description: Get Credential Configuration
+      responses:
+        "200":
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/CredentialConfigResponse'
+        "403":
+          description: Credential is forbidden to current user
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+                
+        "400":
+          description: Credential Not Found
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'          
+
+components:
+  schemas:
+    CreateCredentialConfigRequest:
+      type: object
+     
+    CredentialConfigResponse:
+      type: object  
+        
+    GetCredentialManageDataResponse:
+      type: object
+      required:
+        - changeEveryBreak
+        - scheduled
+      properties:
+        changeEveryBreak:
+          type: boolean
+        notifyUsers:
+          type: array
+          items:
+            type: object
+            properties:
+              userId:
+                type: string
+                format: string
+        scheduled:
+          type: object
+          required:
+            - cron
+          properties:
+            cron:
+              type: string
+      
+    GetCredentialCounters:
+      type: object
+      required:
+        - waited
+        - approved
+        - notApproved
+      properties:
+        waited:
+          type: integer
+          format: int64
+        approved:
+          type: integer
+          format: int64
+        notApproved:
+          type: integer
+          format: int64
+    PostPermissionRequest:
+      type: object
+      required:
+        - permissions
+      properties:
+        permissions:
+          type: array
+          items: 
+            $ref: '#/components/schemas/Permission'
+          
+    PostPermissionResponse:
+      type: object
+      required:
+        - requestId
+      properties:
+        requestId:
+          type: string
+          format: string
+      
+    PostCredentialManageDataResponse:
+      type: object
+      required:
+        - requestId
+      properties:
+        requestId:
+          type: string
+          format: string
+        
+    PostCredentialManageDataRequest:
+      type: object
+      properties:
+        changeEveryBreak:
+          type: boolean
+        notifyUsers:
+          type: array
+          items:
+            type: object
+            properties:
+              userId:
+                type: string
+                format: string
+              
+        scheduled:
+          type: object
+          required:
+            - cron
+          properties:
+            cron:
+              type: string
+      
+    GetCredentialHistoryResponse:
+      type: object
+      required:
+        - requestId
+        - history
+      properties:
+        requestId:
+          type: string
+          format: string
+        history:
+          type: array
+          items:
+            $ref: '#/components/schemas/OperationHistory'
+            
+    Permission:
+      type: object
+      properties:
+        whoCreate:
+          type: string
+        user:
+          type: string
+          format: string
+        permissionsSet:
+          $ref: '#/components/schemas/PermissionsSet'
+          
+    GetPermissionsResponse:
+      type: object
+      required:
+        - requestId
+        - permissions
+        - updatedAt
+      properties:
+        requestId:
+          type: string
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+        updatedAt:
+          type: string
+          format: date-time
+
+    SearchCredentialItem:
+      allOf: 
+        - $ref: '#/components/schemas/CredentialData'
+        - type: object
+          required:
+            - credentialId
+          properties:
+            credentialId:
+              type: string
+       
+    SearchCredentialResponse:
+      type: object
+      required:
+        - credentials
+      properties:
+        credentials:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchCredentialItem'
+    
+    SearchCredentialCountResponse:
+      type: object
+      required:
+        - all
+        - your
+      properties:
+        all:
+          type: integer
+          format: int64
+        your:
+          type: integer
+          format: int64
+              
+    PostCredentialResponse:
+      type: object
+      required:
+        - requestId
+        - credentialId 
+      properties:
+        requestId:
+          type: string
+          format: string
+        credentialId:
+          type: string
+          format: string
+      
+    CreateCredentialRequest:
+      type: object
+      required:
+        - credential 
+      properties:
+        credential:
+          $ref: '#/components/schemas/Credential'
+
+    UpdateCredentialRequest:
+      type: object
+      required:
+        - credential
+      properties:
+        credential:
+          $ref: '#/components/schemas/CredentialUpdate'
+    
+    GetHistoryRequest:
+      type: object
+      properties:
+        credentialId:
+          type: string
+        userId:
+          type: string
+        limit:
+          type: integer
+          format: int32
+        offset:
+          type: integer
+          format: int32
+        filter:
+          type: string
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+
+    Credential:
+      type: object
+      required:
+        - name
+        - keyValue
+      properties:
+        name:
+          type: string
+        groupId:
+          type: string
+        serviceId:
+          type: string
+        credentialType:
+          $ref: '#/components/schemas/CredentialTypes'
+        checkStatus:
+          type: boolean
+        manageStatus:
+          type: boolean
+        keyValue:
+          type: array
+          items:
+              type: object
+              properties:
+                key:
+                  oneOf:
+                  - $ref: '#/components/schemas/KeyValueType'
+                  - $ref: '#/components/schemas/FreeType'
+                value:
+                  type: string
+    
+    CredentialUpdate:
+      type: object
+      required:
+        - name
+        - credentialType
+        - checkStatus
+        - manageStatus
+      properties:
+        name:
+          type: string
+        credentialType:
+          $ref: '#/components/schemas/CredentialTypes'
+        checkStatus:
+          type: boolean
+        manageStatus:
+          type: boolean
+          
+    KeyValueType:
+      type: string
+      description: |-
+        well-know key types for credentials.
+      enum:
+        - password
+        - passkey
+    
+    FreeType:
+      description: |-
+        FreeType means you can store key-value pairs in credentials. on the break operation, you must fecth this type from it. 
+      type: string
+  
+    GetCredentialResponse:
+      type: object
+      required:
+        - credentials
+        - requestId
+      properties:
+        requestId:
+          type: string
+        credential:
+          $ref: '#/components/schemas/CredentialData'
+    
+    GetBreakCredentialResponse:
+      type: object
+      required:
+        - credential
+        - requestId
+      properties:
+        requestId:
+          type: string
+        credential:
+          $ref: '#/components/schemas/Credential'
+
+    PermissionsSet:
+      description: |-
+        Supported permissions:
+          - can_connect: this user has connection permission
+          - can_see_password: break or checkout password from ui
+          - can_change_password: change or maintanence password
+          - can_authorize_other_users: give connection permission to other users
+          - can_join_session: join privileged session for other users
+          - can_connection_with_request_permission: request on the fly connection to destination service
+          - can_manage_others_users: manage users in this credentials
+      uniqueItems: true
+      type: array
+      items:
+        type: string
+        enum:
+          - CAN_CONNECT
+          - CAN_SEE_PASSWORD
+          - CAN_CHANGE_PASSWORD
+          - CAN_AUTHORIZE_OTHER_USERS
+          - CAN_JOIN_SESSIONS
+          - CAN_CONNECTION_WITH_REQUEST_PERMISSION
+          - CAN_MANAGE_OTHER_USERS
+          
+    CredentialTypes:
+      type: string
+      description: Type of credentials. Account means local account. other means keyvalue datastore for general usage
+      enum:
+        - account
+        - other
+         
+    CredentialData:
+      type: object
+      required:
+        - name
+        - group
+        - createdAt
+        - updatedAt
+        - whoCreate
+        - credentialType
+        - checkStatus
+        - manageStatus
+        - canBreak
+        - canCheckout
+        - canManage
+      properties:
+        name:
+          type: string
+          description: name for credentials.
+        group:
+          type: string
+          description: group Id for credentials
+        createdAt:
+          type: string
+          format: date-time
+          description: creation Time
+        updatedAt:
+          type: string
+          format: date-time
+          description: lastOperation Tyime
+        whoCreate:
+          type: string
+          format: string
+        serviceId:
+          type: string
+          format: string
+          description: if credential type is account then this field holds serviceId for related account
+        credentialType:
+          $ref: '#/components/schemas/CredentialTypes'
+        checkStatus:
+          type: boolean
+        manageStatus:
+          type: boolean
+        canBreak:
+          type: boolean
+        canCheckout:
+          type: boolean
+        canManage:
+          type: boolean
+           
+    OperationTypes:
+      type: string
+      description: Credential Operation Types
+      enum:
+        - checkStatus
+        - useInProxy
+        - breakTheGlass
+        - passwordChange
+        - manage
+         
+    OperationHistory:
+      type: object
+      description: Each credential has operation history array for related operation about itself. For example; break, change password or access this credentials with proxy are example of operations
+      required:
+        - operation
+        - opTime
+        - status
+        - message
+        - whoDid
+        - credentialId
+      properties:
+        opType:
+          $ref: '#/components/schemas/OperationTypes'
+        opTime:
+          type: string
+          format: date-time
+        status:
+          type: boolean
+          description: final status of operation
+        message:
+          type: string
+          description: operation message come from system
+        whoDid:
+          type: string
+          format: string
+          description: which user did this
+        credentialId:
+          type: string
+          format: string
+          description: which credential was the operation performed
+          
+    ApiResponse:
+      description: Default API response
+      type: object
+      required:
+        - requestId
+        - code
+        - message
+      properties:
+        requestId:
+          type: string
+          description: Every request has unique id which is assigned from system
+        message:
+          type: string
+          description: Custom Retur message for this request
+        code:
+          type: string
+          description: Pdaccess related error code with this request

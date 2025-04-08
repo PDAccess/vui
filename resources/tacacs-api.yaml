@@ -1,0 +1,782 @@
+openapi: 3.0.3
+info:
+  title: PDAccess Tacacs-plus - OpenAPI 3.0
+  description: |-
+    Tacacs Server rest api for PDAccess tacacs interface
+  termsOfService: http://www.pdaccess.com/terms/
+  contact:
+    email: support@pdaccess.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+externalDocs:
+  description: Find out more about Swagger
+  url: http://www.pdaccess.com
+servers:
+  - url: https://dev.pdaccess.com/api/v1/tacacs
+tags:
+  - name: logs
+    description: Logs Query For Authentication & Authorization & Accounting
+  - name: policy
+    description: Tacacs Policy Managemenet Per Group
+  - name: config
+    description: Tacacs Related Configuration Management
+paths:
+  /policy/group/{group}:
+    get:
+      tags:
+        - policy
+      summary: Find Policies in group
+      description: Fetch Group Policy Definition
+      operationId: findPolicyGroups
+      parameters:
+        - name: group
+          in: path
+          description: Group Id for policy
+          required: true
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/GroupPolicyResponse'          
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'     
+    post:
+      tags:
+        - policy
+      summary: Create a policy in the db with form data
+      description: Create Policy in the group
+      operationId: createPolicy
+      parameters:
+        - name: group
+          in: path
+          description: Group Id for policy
+          required: true
+          explode: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PolicyCreateRequest'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolicyResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'     
+  /policy/{policy}:
+    get:
+      tags:
+        - policy
+      summary: Find policy by ID
+      description: Returns a single policy
+      operationId: getPolicyById
+      parameters:
+        - name: policy
+          in: path
+          description: ID of policy to return
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolicyResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse' 
+        '404':
+          description: Policy not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse' 
+    post:
+      tags:
+        - policy
+      summary: Updates a policy in the store with form data
+      description: ''
+      operationId: updatePolicy
+      parameters:
+        - name: policy
+          in: path
+          description: ID of policy that needs to be updated
+          required: true
+          schema:
+            type: string
+      requestBody: 
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PolicyCreateRequest'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Policy' 
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse' 
+    delete:
+      tags:
+        - policy
+      summary: Deletes a policy
+      description: delete a policy
+      operationId: deletePolicy
+      parameters:
+        - name: policy
+          in: path
+          description: Policy id to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /privilege/group/{group}:
+    get:
+      tags:
+        - privilege
+      summary: Finds Privilege level by group
+      description: Find Privilege level data by group
+      operationId: findPrivilegeGroup
+      parameters:
+        - name: group
+          in: path
+          description: Group in for privileged
+          required: true
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupPrivilege'          
+        '404':
+          description: Group Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+    post:
+      tags:
+        - privilege
+      summary: Create or Update a privilege in the db with form data
+      description: ''
+      operationId: upsertPrivilege
+      parameters:
+        - name: group
+          in: path
+          description: Group in for privileged
+          required: true
+          explode: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Privilege'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrivilegeResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /privilege/{privilege}:
+    get:
+      tags:
+        - privilege
+      summary: Find privilege by ID
+      description: Returns a single privilege
+      operationId: getPrivilegeById
+      parameters:
+        - name: privilege
+          in: path
+          description: ID of Privilege to return
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrivilegeResponse'
+        '404':
+          description: Privilege not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+    delete:
+      tags:
+        - privilege
+      summary: Deletes a privilege
+      description: delete a privilege
+      operationId: deletePrivilege
+      parameters:
+        - name: privilege
+          in: path
+          description: Privilege id to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+        '404':
+          description: Privilege not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /logs/accounting/{serviceId}:
+    post:
+      tags:
+        - logs
+      summary: service accouting logs
+      description: ''
+      operationId: acctService
+      parameters:
+        - name: serviceId
+          in: path
+          description: ID of service ID
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: limit count of results
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: offset
+          in: query
+          description: offset of the page count
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: filter
+          in: query
+          description: filter of log
+          required: false
+          schema:
+            type: string
+        - name: startDate
+          in: query
+          description: start date of log range
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: endDate
+          in: query
+          description: end date of log range
+          required: false
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccoutingLogResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /settings:
+    get:
+      tags:
+        - config
+      summary: Server Settings For Tacacs
+      description: Server Configuration Management
+      operationId: getConfiguration
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerConfiguration'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+                
+  /logs/authentication/{serviceId}:
+    post:
+      tags:
+        - logs
+      summary: service authentication logs
+      description: Service Authentication logs
+      operationId: getAuthenticationLogs
+      parameters:
+        - name: serviceId
+          in: path
+          description: ID of service ID
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: limit count of results
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: offset
+          in: query
+          description: offset of the page count
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: filter
+          in: query
+          description: filter of log
+          required: false
+          schema:
+            type: string
+        - name: startDate
+          in: query
+          description: start date of log range
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: endDate
+          in: query
+          description: end date of log range
+          required: false
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: authentication logs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationLogResponse'
+ 
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'     
+  /logs/authorization/{serviceId}:
+    post:
+      tags:
+        - logs
+      summary: service authorization logs
+      description: Service Authorization logs
+      operationId: getAuthorizationLogs
+      parameters:
+        - name: serviceId
+          in: path
+          description: ID of service ID
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: limit count of results
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: offset
+          in: query
+          description: offset of the page count
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: filter
+          in: query
+          description: filter of log
+          required: false
+          schema:
+            type: string
+        - name: startDate
+          in: query
+          description: start date of log range
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: endDate
+          in: query
+          description: end date of log range
+          required: false
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: authorization logs
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/AuthorizationLogResponse'  
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'     
+components:
+  schemas:
+    PolicyType:
+      type: string
+      description: Policy type
+      enum:
+        - B
+        - W
+        - F
+        - A
+    GroupPrivilege:
+      type: object
+      required:
+        - user
+      properties:
+        system:
+          $ref: '#/components/schemas/Privilege'
+        default:
+          $ref: '#/components/schemas/Privilege'
+        user:
+          type: array
+          items:
+            $ref: '#/components/schemas/Privilege'
+    Policy:
+      type: object
+      required:
+        - name
+        - userIds
+        - regexes
+        - policyType
+      properties:
+        policyId:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        userIds:
+          type: array
+          items:
+            type: string
+        regexes:
+          type: array
+          items:
+            type: string
+        policyType:
+          $ref: '#/components/schemas/PolicyType'
+        createdByUsername:
+          type: string
+        createdByUserid:
+          type: string
+        createdAt:
+          type: string
+    Accounting:
+      type: object
+      properties:
+        userId:
+          type: string
+        username:
+          type: string
+        command:
+          type: string
+        params:
+          type: string
+        remoteAddr:
+          type: string
+        createdAt:
+          type: string
+        flag:
+          type: string
+        authenType:
+          type: string
+        authenService:
+          type: string
+        authenMethod:
+          type: string
+    Privilege:
+      type: object
+      required:
+        - privilegeId,
+        - userId
+        - groupId
+        - privilegedLevel
+      properties:
+        privilegeId:
+          type: string
+        userId:
+          type: array
+          items:
+            type: string
+        groupId:
+          type: string
+        privilegedLevel:
+          type: string
+        createdByUsername:
+          type: string
+        createdByUserid:
+          type: string
+        createdAt:
+          type: string
+    ApiResponse:
+      type: object
+      description: Api generic response for errors
+      required:
+        - code
+        - type
+        - message
+        - requestId
+      properties:
+        code:
+          type: string
+        type:
+          type: string
+        message:
+          type: string
+        requestId:
+          type: string
+    PolicyResponse:
+      type: object
+      required:
+        - policy
+        - requestId
+      properties:
+        requestId: 
+          type: string
+        policy:
+          $ref: '#/components/schemas/Policy' 
+    PrivilegeResponse:
+      type: object
+      required:
+        - privilege
+        - requestId
+      properties:
+        requestId: 
+          type: string
+        privilege:
+          $ref: '#/components/schemas/Privilege' 
+    AuthenticationLog:
+      type: object
+      required:
+        - username
+        - remoteAddress
+        - userAddress
+        - status
+        - attemptedAt
+      properties:
+        userId: 
+          type: string
+        username: 
+          type: string
+        remoteAddress: 
+          type: string
+        userAddress: 
+          type: string
+        authenticationId: 
+          type: integer
+          format: int32
+        reason: 
+          type: string
+        status: 
+          type: boolean
+        attemptedAt: 
+          type: string
+        authen_action: 
+          type: string
+        authen_type: 
+          type: string
+        authen_service: 
+          type: string
+    AuthorizationLog:
+      type: object
+      required:
+        - username
+        - remoteAddress
+        - userAddress
+        - status
+        - attemptedAt
+      properties:
+        userId: 
+          type: string
+        username: 
+          type: string
+        remoteAddress: 
+          type: string
+        userAddress: 
+          type: string
+        privilegedLevel: 
+          type: string
+        reason: 
+          type: string
+        status: 
+          type: boolean
+        attemptedAt: 
+          type: string
+        authenMethod: 
+          type: string
+        authenType: 
+          type: string
+        authenService: 
+          type: string
+        args: 
+          type: string
+    AuthenticationLogResponse:
+        type: object
+        required:
+          - requestId
+          - data
+        properties:
+          requestId:
+            type: string
+          data:
+            type: array
+            items:
+              $ref: '#/components/schemas/AuthenticationLog'
+    AuthorizationLogResponse:
+      type: object
+      required:
+        - requestId
+        - data
+      properties:
+        requestId:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthorizationLog'
+    AccoutingLogResponse:
+      type: object
+      required:
+        - requestId
+        - data
+      properties:
+        requestId:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Accounting'
+    GroupPolicyResponse:
+      type: object
+      required:
+        - requestId
+        - data
+      properties:
+        requestId:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Policy'
+    PolicyCreateRequest:
+      type: object
+      required:
+        - name
+        - userIds
+        - regexes
+        - policyType
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        userIds:
+          type: array
+          items:
+            type: string
+        regexes:
+          type: array
+          items:
+            type: string
+        policyType:
+          $ref: '#/components/schemas/PolicyType'
+    ServerConfiguration:
+      type: object
+      required:
+        - secret
+        - maxConnection
+        - connectionRate
+      properties:
+        secret:
+          type: string
+        connectionRate:
+          type: integer
+          format: int32
+        maxConnection:
+          type: integer
+          format: int32
+  securitySchemes:
+    bearerAuth:            
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - bearerAuth: [] 

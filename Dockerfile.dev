@@ -1,0 +1,16 @@
+FROM node:10-alpine AS installer
+WORKDIR /app
+
+COPY package*.json .
+RUN apk add --no-cache git openssh-client
+RUN npm install
+
+FROM node:10-alpine
+
+WORKDIR /app
+
+COPY --from=installer /app /app
+
+COPY . .
+
+ENTRYPOINT ["npm", "run", "serve"]

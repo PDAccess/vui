@@ -1,0 +1,3 @@
+# Grup Detay
+
+___

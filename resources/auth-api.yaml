@@ -1,0 +1,1063 @@
+openapi: 3.0.0
+info:
+  description: Authentication microservice is responsible for system authentication
+  license:
+    name: PDAccess License
+    url: https://www.pdaccess.com
+  title: auth-ws
+  version: 1.0.0
+externalDocs:
+  description: Find out more about PDAccess Auth Api
+  url: https://pdaccess.com/support
+servers:
+  - url: /api/v1/auth
+tags:
+  - description: Oauth2 client management
+    name: client
+  - description: User Operations
+    name: user
+  - description: Realm Management
+    name: realm
+  - description: Logs for Authentication
+    name: log
+paths:
+  /realm/{realmId}/client:
+    get:
+      description: Returns list of authenticate clients
+      operationId: getClients
+      parameters:
+        - description: Use this realm for operation
+          explode: false
+          in: path
+          name: realmId
+          required: true
+          schema:
+            type: string
+          style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/AuthClient"
+                type: array
+          description: successful operation
+        "400":
+          description: failed operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+      summary: Returns list of authenticate clients
+      tags:
+        - client
+    post:
+      description: New Client Generation
+      operationId: createClient
+      parameters:
+        - description: Use this realm for operation
+          explode: false
+          in: path
+          name: realmId
+          required: true
+          schema:
+            type: string
+          style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthClient"
+      responses:
+        "200":
+          description: successfull opreation
+        "400":
+          description: failed operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+      summary: Create New Client
+      tags:
+        - client
+  /realm/{realmId}/client/{clientId}:
+    get:
+      description:
+        For valid response try integer IDs with value <= 5 or > 10. Other
+        values will generated exceptions
+      operationId: getClientById
+      parameters:
+        - description: ID of pet that needs to be fetched
+          explode: false
+          in: path
+          name: clientId
+          required: true
+          schema:
+            type: string
+          style: simple
+        - description: Login User at specifct realm
+          explode: false
+          in: path
+          name: realmId
+          required: true
+          schema:
+            type: string
+          style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Login"
+          description: successful operation
+        "400":
+          description: Invalid ID supplied
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        "404":
+          description: Order not found
+      summary: Find purchase order by ID
+      tags:
+        - client
+  /user:
+    get:
+      description: get logged user info
+      operationId: userInfo
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+          description: successful operation
+        "400":
+          description: Invalid ID supplied
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+      summary: user Info
+      tags:
+        - user
+    post:
+      description: This can only be done by the logged in user.
+      operationId: createUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+        description: Created user object
+        required: true
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserCreateResponse"
+        "400":
+          description: failed operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        "401":
+          description: forbidden operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+      summary: Create user
+      tags:
+        - user
+  /user/search:
+    post:
+      description: ""
+      operationId: searchUsers
+      parameters:
+        - name: deleted
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: blocked
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/User"
+                type: array
+          description: successful operation
+        "400":
+          description: failed operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        "401":
+          description: forbidden operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+      summary: Creates list of users with given input array
+      tags:
+        - user
+
+  /user/block:
+    post:
+      description: "block users"
+      operationId: blockUser
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: blocked
+          in: query
+          required: true
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: successful operation
+        "400":
+          description: failed operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        "401":
+          description: forbidden operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+      summary: block user with given user id and status of block
+      tags:
+        - user
+
+  /user/{userId}:
+    delete:
+      description: This can only be done by the logged in user.
+      operationId: deleteUser
+      parameters:
+        - description: The name that needs to be deleted
+          explode: false
+          in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+          style: simple
+      responses:
+        "200":
+          description: successful operation
+        "400":
+          description: user is not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        "401":
+          description: forbidden operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+      summary: Delete user
+      tags:
+        - user
+    get:
+      description: ""
+      operationId: getUserById
+      parameters:
+        - description: The name that needs to be fetched. Use user1 for testing.
+          explode: false
+          in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+          style: simple
+      responses:
+        "200":
+          content:
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/User"
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+          description: successful operation
+        "400":
+          description: failed operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        "401":
+          description: forbidden operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+      summary: Get user by user name
+      tags:
+        - user
+    put:
+      description: This can only be done by the logged in user.
+      operationId: updateUser
+      parameters:
+        - description: name that need to be deleted
+          explode: false
+          in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+          style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+        description: Updated user object
+        required: true
+      responses:
+        "200":
+          description: successful operation
+        "400":
+          description: user is not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        "401":
+          description: forbidden operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+      summary: Updated user
+      tags:
+        - user
+
+  /user/image/{userId}:
+    get:
+      description: Get user avatar by the user id
+      operationId: getAvatarById
+      parameters:
+        - description: The name that needs to be fetched. Use user1 for testing.
+          explode: false
+          in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+          style: simple
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: successful operation
+        "400":
+          description: failed operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        "401":
+          description: forbidden operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+      summary: Get avatar by user id
+      tags:
+        - user
+
+  /user/image:
+    delete:
+      description: This can delete user avatar by the user id.
+      operationId: deleteAvatar
+      responses:
+        "200":
+          description: successful operation
+        "400":
+          description: user is not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        "401":
+          description: forbidden operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+      summary: Delete avatar
+      tags:
+        - user
+    post:
+      description: This can only be done by the logged in user.
+      operationId: updateAvatar
+      requestBody:
+        content:
+          "image/*":
+            schema:
+              type: string
+              format: binary
+        description: Updated user avatar
+        required: true
+      responses:
+        "200":
+          description: successful operation
+        "400":
+          description: user is not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        "401":
+          description: forbidden operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+      summary: Updated avatar
+      tags:
+        - user
+
+  /user/password:
+    post:
+      description: This can only be done by the logged in user.
+      operationId: changePassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PasswordChange"
+      responses:
+        "200":
+          description: successful operation
+        "400":
+          description: user is not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        "401":
+          description: forbidden operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+      summary: Updated password
+      tags:
+        - user
+
+  /mfa/status:
+    get:
+      description: This can only be done by the logged in user.
+      operationId: mfaStatus
+      responses:
+        "200":
+          description: Successfull Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MfaStatus"
+        "400":
+          description: failed operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        "401":
+          description: forbidden operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+      summary: MFA Status
+      tags:
+        - user
+    post:
+      description: This can only be done by the logged in user.
+      operationId: mfaCheck
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MfaRequest"
+        description: Mfa type data
+        required: true
+      responses:
+        "200":
+          description: Successfull Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MfaSecret"
+        "400":
+          description: failed operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        "401":
+          description: forbidden operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+      summary: Check MFA
+      tags:
+        - user
+    put:
+      description: This can only be done by the logged in user.
+      operationId: mfaEnable
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MfaRequest"
+        description: Mfa type data
+        required: true
+      responses:
+        "200":
+          description: Successfull Operation
+        "400":
+          description: failed operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        "401":
+          description: forbidden operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+      summary: Enable MFA
+      tags:
+        - user
+    delete:
+      description: This can only be done by the logged in user.
+      operationId: mfaDisable
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MfaRequest"
+        description: Mfa type data
+        required: true
+      responses:
+        "200":
+          description: Successfull Operation
+        "400":
+          description: failed operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        "401":
+          description: forbidden operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+      summary: Disable MFA
+      tags:
+        - user
+
+  /realm:
+    post:
+      description: This can only be done by the logged in user.
+      operationId: createRealm
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                realm:
+                  $ref: "#/components/schemas/RealmRequest"
+                user:
+                  $ref: "#/components/schemas/User"
+        description: Updated user object
+        required: true
+      responses:
+        "200":
+          description: Successfull Operation
+        "400":
+          description: failed operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        "401":
+          description: forbidden operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+      summary: Create realm
+      tags:
+        - realm
+
+  /realm/search:
+    post:
+      description: This can only be done by the logged in user.
+      operationId: listRealms
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/Realm"
+                type: array
+          description: successful operation
+        "400":
+          description: failed operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        "401":
+          description: forbidden operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+      summary: List realms
+      tags:
+        - realm
+
+  /realm/{realmId}:
+    delete:
+      description: Delete realm data
+      operationId: deleteRealm
+      parameters:
+        - description: The name that needs to be deleted
+          explode: false
+          in: path
+          name: realmId
+          required: true
+          schema:
+            type: string
+          style: simple
+      responses:
+        "200":
+          description: Successfull operation
+        "400":
+          description: failed operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        "401":
+          description: forbidden operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+      summary: Delete realm
+      tags:
+        - realm
+    get:
+      description: Get realm by id
+      operationId: getRealmById
+      parameters:
+        - description: The name that needs to be fetched. Use user1 for testing.
+          explode: false
+          in: path
+          name: realmId
+          required: true
+          schema:
+            type: string
+          style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Realm"
+          description: successful operation
+        "400":
+          description: failed operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        "401":
+          description: forbidden operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+      summary: Get realm by name
+      tags:
+        - realm
+    put:
+      description: This can only be done by the logged in user.
+      operationId: updateRealm
+      parameters:
+        - description: name that need to be deleted
+          explode: false
+          in: path
+          name: realmId
+          required: true
+          schema:
+            type: string
+          style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RealmRequest"
+        description: Updated user object
+        required: true
+      responses:
+        "200":
+          description: Successfull Operation
+        "400":
+          description: failed operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        "401":
+          description: forbidden operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+      summary: Updated user
+      tags:
+        - realm
+  /log/auth:
+    post:
+      description: Authentication Logs Search
+      operationId: authLogs
+      parameters:
+        - name: limit
+          in: query
+          description: limit count of results
+          required: false
+          example: 10
+          schema:
+            type: integer
+            format: int32
+        - name: offset
+          in: query
+          description: offset of the page count
+          required: false
+          example: 0
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SearchAuthRequest"
+        description: Authentication Logs search parameters
+        required: true
+      responses:
+        "200":
+          description: Successfull Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SearchAuthResponse"
+        "400":
+          description: failed operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        "403":
+          description: failed operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        "500":
+          description: failed operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+      summary: Authentication Log Search
+      tags:
+        - log
+components:
+  requestBodies:
+    UserArray:
+      content:
+        application/json:
+          schema:
+            items:
+              $ref: "#/components/schemas/User"
+            type: array
+      description: List of user object
+      required: true
+  schemas:
+    Login:
+      description: Login Object for username/password base authentication
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        type:
+          enum:
+            - userpass
+            - ldap
+          type: string
+      title: Login User Data
+      type: object
+    PasswordChange:
+      description: Password change data
+      required:
+        - currentPassword
+        - newPassword
+      properties:
+        currentPassword:
+          type: string
+        newPassword:
+          type: string
+      title: Login User Data
+      type: object
+    AuthClient:
+      description: AuthClient Definition
+      properties:
+        id:
+          type: string
+        secret:
+          type: string
+        grants:
+          type: array
+          items:
+            type: string
+      title: Client Definition
+      type: object
+    User:
+      description: User who is added to realm
+      required:
+        - username
+        - mfa
+        - external
+        - role
+        - realm
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        realm:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        phone:
+          type: string
+        mfa:
+          type: boolean
+        notification:
+          type: boolean
+        status:
+          type: string
+        shell:
+          type: string
+        external:
+          type: boolean
+        role:
+          type: string
+        userStatus:
+          description: User Status
+          format: int32
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        deletedAt:
+          type: string
+          format: date-time
+        blockedAt:
+          type: string
+          format: date-time
+      title: User
+      type: object
+    Realm:
+      description: Realm data
+      required:
+        - id
+        - name
+        - createdAt
+        - whoCreate
+        - isDeleted
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        descriptionText:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        whoCreate:
+          type: string
+        isDeleted:
+          type: boolean
+      type: object
+    MfaRequest:
+      description: Mfa data
+      required:
+        - type
+      properties:
+        code:
+          type: string
+        type:
+          type: string
+      type: object
+    MfaSecret:
+      description: Mfa Check Response
+      required:
+        - secret
+      properties:
+        secret:
+          type: string
+    MfaStatus:
+      description: Mfa status data
+      required:
+        - google_authenticator
+        - sms
+        - email
+      properties:
+        google_authenticator:
+          type: boolean
+        sms:
+          type: boolean
+        email:
+          type: boolean
+      type: object
+    RealmRequest:
+      description: Realm data
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        descriptionText:
+          type: string
+      type: object
+    GenericError:
+      description: GenericError Response
+      required:
+        - message
+        - type
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      title: Generic Error Object
+      type: object
+    ApiResponse:
+      description: Describes the result of uploading an image resource
+      properties:
+        code:
+          type: string
+        type:
+          type: string
+        message:
+          type: string
+      title: An uploaded response
+      type: object
+
+    UserCreateResponse:
+      type: object
+      required:
+        - userId
+      properties:
+        userId:
+          type: string
+    SearchAuthRequest:
+      type: object
+      properties:
+        userId:
+          type: string
+        serviceId:
+          type: string
+        startTime:
+          type: string
+          format: time
+        endTime:
+          type: string
+          format: time
+        onlyProxy:
+          type: boolean
+        onlyFailed:
+          type: boolean
+    SearchAuthResponse:
+      type: object
+      required:
+        - data
+        - requestId
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/SearchAuthData"
+        requestId:
+          type: string
+
+    SearchAuthData:
+      type: object
+      required:
+        - sessionId
+        - authStatus
+      properties:
+        sessionId:
+          type: string
+        userId:
+          type: string
+        userName:
+          type: string
+        authStatus:
+          type: boolean
+        attemptTime:
+          type: string
+          format: time
+        remoteAddr:
+          type: string
+        remoteAgent:
+          type: string
+        reason:
+          type: string
